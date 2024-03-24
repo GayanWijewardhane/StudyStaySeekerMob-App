@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model listings {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  v             Int      @map("__v")
+  accotype      String?
+  address       String
+  bathrooms     Int
+  bedrooms      Int
+  createdAt     DateTime @db.Date
+  description   String
+  for           String?
+  forGender     String?
+  furnished     Boolean
+  imageUrls     String[]
+  keyMoneyPrice Int?
+  kitchen       Boolean?
+  name          String
+  offer         Boolean?
+  parking       Boolean
+  regularPrice  Int
+  sharing       Boolean?
+  sharingPrice  Int?
+  type          String
+  updatedAt     DateTime @db.Date
+  userRef       String
+  bids          bids[]
+}
+
+model users {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  avatar    String?
+  createdAt DateTime @db.Date
+  email     String   @unique(map: "email_1")
+  password  String
+  updatedAt DateTime @db.Date
+  username  String   @unique(map: "username_1")
+  bids      bids[]
+}
+
+model bids {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  v         Int      @map("__v")
+  amount    Int
+  createdAt DateTime @db.Date
+  updatedAt DateTime @db.Date
+  listing   listings @relation(fields: [listingId], references: [id])
+  listingId String
+  bidder    users    @relation(fields: [bidderId], references: [id])
+  bidderId  String
+}
